@@ -60,8 +60,8 @@
 Επιλογή: 2
 
 --- ΣΥΝΔΕΣΗ ΔΙΑΧΕΙΡΙΣΤΗ ---
-Username: admin
-Password: movie123
+Username: admin  --> Sos για να μπείτε
+Password: movie123  --> Sos για να μπείτε
 Επιτυχής σύνδεση.
 
 
