@@ -1,23 +1,23 @@
 #service.py
 
-
-from models import Work, Person, Review, User, Series
+from models import Work, Person, Series
 from datetime import date as Date
 
 
 class MovieManager: #The class that manages attributes and methods
     def __init__(self):
         self.works: list[Work] = [] # List to store movies and series
-        self.users: list[User] = [] # List to store users
         self.persons: list[Person] = [] # List to store actors and directors
+
+        self.admin_db = {"admin": "movie123"} # for Login Check admin Codes Mr fragiadakis
         
         self._next_work_id = 1 # Internal counter for work IDs        
         self._next_user_id = 1 # Internal counter for user IDs
         self._next_person_id = 1 # Internal counter for person IDs
-
-
+        
         self._seed_demo_data()
 
+#DUMMY INPUTS
     def _seed_demo_data(self) -> None:
         """Creates 3-4 ready-made movies and series for testing."""
         self.add_work("Inception", Date(2010, 7, 16), "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.", ["Action", "Sci-Fi"], 8.8)
@@ -26,15 +26,14 @@ class MovieManager: #The class that manages attributes and methods
         self.add_serie("Stranger Things", Date(2016, 7, 15), "When a young boy vanishes, a small town uncovers a mystery of government experiments, terrifying supernatural forces and an alias that affects the lives of those involved.", ["Drama", "Fantasy"], 8.7, Date(2025, 7, 15), 4, 34)
 
 
-    # ------- works ---------
-
+#ADD WORK
     def add_work(self, title: str, release_date: Date, storyline: str, work_type: list, avr_rating: float, ) -> Work:
         new_work = Work(self._next_work_id, title, release_date, storyline, work_type, avr_rating)
         self.works.append(new_work) # Add work to the list
         self._next_work_id += 1 # Increment the work ID counter
         return new_work
     
-
+#ADD SERIES
     def add_serie(self, title: str, release_date: Date, storyline: str, work_type: list, avr_rating: float, 
                    last_air_date: Date, season_count: int, episodes_count: int) -> Series:
         
@@ -43,4 +42,59 @@ class MovieManager: #The class that manages attributes and methods
         self._next_work_id +=1 # Increment the work ID counter
         return new_series
     
+#ADD PERSON
+    def add_person(self, full_name: str, birth_date: str, birth_place: str, website: str, bio: str) -> Person:
+        new_person = Person(self._next_person_id, full_name, birth_date, birth_place, website, bio, [])
+        self.persons.append(new_person)
+        self._next_person_id += 1
+        
+        return new_person
+
+#SEARCH TITTLE METHOD
+    def search_tittle(self, title: str) -> Work | None:
+        for w in self.works:
+            if w.title == title:
+                return w # return the tittle
+        
+        return None 
     
+#DIRECTOR OR ACTOR
+    def link_person_to_work(self, person_name: str, work_title: str, role: str) -> bool:
+        work = self.search_tittle(work_title)
+        if not work:
+            print("Το έργο δεν βρέθηκε.")
+            return False
+        
+        found_person = None
+        for p in self.persons:
+            if p.full_name == person_name:
+                found_person = p
+                break
+                
+        if not found_person:
+            print("Ο καλλιτέχνης δεν βρέθηκε.")
+            return False
+        
+        if role == "1":
+            work.cast.append(found_person) 
+        elif role == "2":
+            work.directors.append(found_person)
+            
+        return True
+    
+
+#LOGIN SESSION
+    def login(self) -> bool:
+        username = input("Username: ")
+        password = input("Password: ")
+
+        if username in self.admin_db and self.admin_db[username] == password:
+            
+            print("Επιτυχής σύνδεση.\n")
+            return True
+        else:
+            print("Λάθος στοιχεία.\n")
+            return False
+            
+
+
